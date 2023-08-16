@@ -1,0 +1,25 @@
+sebuah tabel memiliki 15 kolom dengan ururtan kolom nomer yang tertulis No., NIP atau nomer induk pekerja, Nama, Tempat Lahir, Alamat, Tanggal lahir, jenis kelamin yang ditulis L/P, Golongan, Eselon, Jabatan, Tempat Tugas, Agama, Unit Kerja, No. Hp, NPWP.
+
+pada data contoh hanya kolom tanggal lahir, jenis kelamin, golongan, agama, selain itu pada contoh ada yang di isi ada juga yang Tidak
+
+salah satu data contoh isi data nya urut sesuai kolom adalah 1, 12130569001, Saifulloh, Banjarnegara, Jl. Melon No.16 Dian Asri, 15-03-1968, L, IV/e, I, Kepala Sekretariat Utama, Jakarta, Islam.
+
+1. Tabel diatas berisi data pegawai PNS, silakan dipahami terlebih dahulu
+2. Buatlah struktur database berdasarkan tabel diatas
+3. Selanjutnya, buatlah aplikasi berdasarkan referensi tabel diatas dengan fitur sebagai berikut:
+a. Login aplikasi
+b. Upload foto pegawai
+c. Melihat daftar pegawai
+d. Mampu melakukan pencarian data pegawai
+e. Mampu untuk menampilkan seluruh daftar pegawai di dalam unit kerja tertentu
+f. Tambah data pegawai
+g. Ubah data pegawai
+h. Hapus data pegawai
+i. Cetak daftar pegawai
+j. Kolom yang disediakan sesuai hasil cetakan (sangat wajib)
+4. Syarat dan petunjuk teknis pembuatan aplikasi:
+a. Tabel di dalam database harus lebih dari 3 tabel, atau sesuai kaidah normalisasi database akan menjadi penilaian lebih
+b. Harus mengandung minimal komponen tree, data table/grid table, combo box, file upload, radio button dan paging.
+5. Akan memiliki nilai lebih jika menggunakan bahasa pemrograman Nuxt dan framework Laravel.
+6. Tidak harus selesai 100% untuk diterima, kita memiliki cara penilaian sendiri.
+7. Kerjakan semaksimal dan sebagus mungkin, optimis dan percaya Diri !

@@ -1,0 +1,18 @@
+-- Buat fungsi untuk generate NIP
+CREATE OR REPLACE FUNCTION generate_nip()
+    RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.nama IS NOT NULL THEN
+        NEW.nip := '1213056900' || nextval('nip_seq')::text;
+    ELSE
+        NEW.nip := NULL;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Buat trigger untuk menjalankan fungsi
+CREATE TRIGGER trigger_generate_nip
+    BEFORE INSERT ON public.pegawai
+    FOR EACH ROW
+    EXECUTE FUNCTION generate_nip();
