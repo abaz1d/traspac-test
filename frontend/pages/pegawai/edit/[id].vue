@@ -1,32 +1,44 @@
 <template>
   <div>
-    <EmployeeForm :data="userData" :editing="editing" @updateUser="updateUser" />
+    <div>
+      <EmployeeForm v-if="pegawaiData" :data="pegawaiData" :editing="editing" @updatePegawai="updatePegawai" />
+      <div v-else>Loading...</div>
+    </div>
   </div>
 </template>
 
 <script setup>
 const route = useRoute();
-const Users = useUserStore();
+const Pegawai = usePegawaiStore();
 useHead({
-  title: "Edit User | Daftar Pegawai",
-});
-
-const { data: userData } = useAsyncData("getOneUser", async () => {
-  const id = route.params.id;
-  if (id !== undefined) {
-    const response = await Users.readDetailItem(id);
-    return response;
-  } else {
-    return null;
-  }
+  title: "Edit Pegawai | Daftar Pegawai",
 });
 
 const editing = route.params.id !== undefined;
 
-const updateUser = async (formData) => {
-  let data = await Users.saveItem({ id_user: route.params?.id, isEdit: true, ...formData });
+const updatePegawai = async (formData) => {
+  let data = await Pegawai.saveItem({ id_pegawai: route.params?.id, isEdit: true, ...formData });
   if (data) {
     navigateTo("/");
   }
 };
+
+import { onMounted, ref } from "vue";
+const pegawaiData = ref(null);
+
+onMounted(async () => {
+  const tableNames = ["agama", "eselon", "golongan", "jabatan", "unit_kerja"];
+  const id = route.params.id;
+  if (id !== undefined) {
+    // Panggil fungsi readDetailItem dan tunggu hasilnya
+    const response = await Pegawai.readDetailItem(id);
+    //console.log("res", response);
+
+    for (const tableName of tableNames) {
+      await Pegawai.getReferences(tableName);
+    }
+
+    pegawaiData.value = response;
+  }
+});
 </script>

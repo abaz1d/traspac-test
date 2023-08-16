@@ -4,7 +4,6 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var cors = require("cors");
-var session = require("express-session");
 const fileUpload = require("express-fileupload");
 
 const { pool } = require("./helpers/util");
@@ -38,13 +37,6 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 app.use(fileUpload());
 app.use(allowCrossDomain);
-app.use(
-  session({
-    secret: "traspacapi",
-    resave: false,
-    saveUninitialized: true,
-  })
-);
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);

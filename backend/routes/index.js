@@ -111,7 +111,6 @@ module.exports = function (db) {
                   `UPDATE public.users SET token = $1 WHERE id_user = $2 RETURNING id_user,email_user, username, token`,
                   [token, data.rows[0].id_user]
                 );
-                console.log("sesion", req.session);
                 res.json(
                   new Response({
                     userid: rows[0].id_user,
@@ -132,15 +131,16 @@ module.exports = function (db) {
   });
 
   router.get("/logout", async function (req, res) {
-    console.log(req.headers);
     const token = req.headers.authorization;
     if (token && token.split(" ")[1]) {
       const pureToken = token.split(" ")[1];
       try {
         const result = jwt.verify(pureToken, process.env.SECRETKEY);
-        const { rows } = await db.query(
-          `SELECT * FROM public.users WHERE id_user = ${result.userid} ORDER BY id_user ASC`
+        const { rows } = await pool.query(
+          "SELECT token FROM users WHERE id_user = $1 ORDER BY id_user ASC",
+          [user.userid]
         );
+        console.log(result);
         const user = rows[0];
         var tokenNow = null;
         const { data } = await db.query(

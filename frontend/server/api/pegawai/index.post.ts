@@ -21,13 +21,13 @@ export default defineEventHandler(async (event) => {
 
   const {
     id_pegawai,
-    nama_lengkap,
-    nomer_pegawai,
+    nama,
+    nip,
     tempat_lahir,
-    tgl_lahir,
+    tanggal_lahir,
     agama,
     jenis_kelamin,
-    alamat_lengkap,
+    alamat,
     jabatan,
     tempat_tugas,
     no_hp,

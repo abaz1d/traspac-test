@@ -52,27 +52,25 @@
                   </div>
 
                   <div class="col-span-6 sm:col-span-3">
-                    <label for="nama_lengkap" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
+                    <label for="nama" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
                     <input
-                      id="nama_lengkap"
+                      id="nama"
                       type="text"
-                      name="nama_lengkap"
-                      v-model="formData.nama_lengkap"
-                      autocomplete="nama_lengkap"
+                      name="nama"
+                      v-model="formData.nama"
+                      autocomplete="nama"
                       class="mt-1 input bg-white text-black block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                     />
                   </div>
 
                   <div class="col-span-6 sm:col-span-3">
-                    <label for="nomer_pegawai" class="block text-sm font-medium text-gray-700"
-                      >Nomer Induk Pegawai (NIP)</label
-                    >
+                    <label for="nip" class="block text-sm font-medium text-gray-700">Nomer Induk Pegawai (NIP)</label>
                     <input
-                      id="nomer_pegawai"
+                      id="nip"
                       type="text"
-                      name="nomer_pegawai"
-                      v-model="formData.nomer_pegawai"
-                      autocomplete="nomer_pegawai"
+                      name="nip"
+                      v-model="formData.nip"
+                      readonly
                       class="mt-1 input bg-white text-black block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                     />
                   </div>
@@ -96,14 +94,14 @@
                   </div>
 
                   <div class="col-span-6 sm:col-span-3">
-                    <label for="tgl_lahir" class="block text-sm font-medium text-gray-700">Tanggal Lahir</label>
+                    <label for="tanggal_lahir" class="block text-sm font-medium text-gray-700">Tanggal Lahir</label>
                     <input
                       datepi
-                      id="tgl_lahir"
+                      id="tanggal_lahir"
                       type="date"
-                      name="tgl_lahir"
-                      autocomplete="tgl_lahir"
-                      v-model="formData.tgl_lahir"
+                      name="tanggal_lahir"
+                      autocomplete="tanggal_lahir"
+                      v-model="formData.tanggal_lahir"
                       class="mt-1 input bg-white text-black block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                     />
                   </div>
@@ -122,8 +120,8 @@
                       v-model="formData.agama"
                       class="mt-1 select bg-white text-black block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                     >
-                      <option selected value=" ">Pilih Agama</option>
-                      <option>Pilih Agama</option>
+                      <option selected value="">Pilih Agama</option>
+                      <option v-for="item in Pegawai.agama" :value="item.id">{{ item.nama }}</option>
                     </select>
                   </div>
 
@@ -134,11 +132,13 @@
                     >
                       <label class="flex items-center space-x-2 cursor-pointer">
                         <input type="radio" class="radio radio-info" value="L" v-model="formData.jenis_kelamin" />
-                        <span class="text-gray-700">Laki-Laki</span>
+                        <span class="hidden lg:block text-gray-700">Laki-Laki</span>
+                        <span class="block lg:hidden text-gray-700">L</span>
                       </label>
                       <label class="flex items-center space-x-2 cursor-pointer">
                         <input type="radio" class="radio radio-error" value="P" v-model="formData.jenis_kelamin" />
-                        <span class="text-gray-700">Perempuan</span>
+                        <span class="hidden lg:block text-gray-700">Perempuan</span>
+                        <span class="block lg:hidden text-gray-700">P</span>
                       </label>
                     </div>
                   </div>
@@ -150,12 +150,12 @@
                   </div>
 
                   <div class="col-span-6">
-                    <label for="alamat_lengkap" class="block text-sm font-medium text-gray-700">Alamat Lengkap</label>
+                    <label for="alamat" class="block text-sm font-medium text-gray-700">Alamat Lengkap</label>
                     <textarea
-                      id="alamat_lengkap"
-                      name="alamat_lengkap"
+                      id="alamat"
+                      name="alamat"
                       rows="5"
-                      v-model="formData.alamat_lengkap"
+                      v-model="formData.alamat"
                       class="mt-1 textarea textarea-bordered bg-white text-black block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                     ></textarea>
                   </div>
@@ -185,15 +185,35 @@
               <div class="px-4 py-5 bg-white sm:p-6">
                 <div class="grid grid-cols-6 gap-6">
                   <div class="col-span-6 sm:col-span-3">
+                    <label for="unit_kerja" class="block text-sm font-medium text-gray-700">Unit Kerja</label>
+                    <select
+                      id="unit_kerja"
+                      name="unit_kerja"
+                      v-model="formData.unit_kerja"
+                      class="mt-1 select bg-white text-black block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    >
+                      <option selected value="">Pilih Eselon</option>
+                      <option v-for="item in Pegawai.unitKerja" :value="item.id">{{ item.nama }}</option>
+                    </select>
+                  </div>
+
+                  <div class="col-span-6 sm:col-span-3">
                     <label for="jabatan" class="block text-sm font-medium text-gray-700">Jabatan</label>
-                    <input
+                    <select
                       id="jabatan"
-                      type="text"
                       name="jabatan"
-                      autocomplete="jabatan"
                       v-model="formData.jabatan"
-                      class="mt-1 input bg-white text-black block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                    />
+                      class="mt-1 select bg-white text-black block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    >
+                      <option selected value="">Pilih Eselon</option>
+                      <option v-for="item in Pegawai.jabatan" :value="item.id">{{ item.nama }}</option>
+                    </select>
+                  </div>
+
+                  <div class="col-span-6 hidden sm:block" aria-hidden="true">
+                    <div class="py-1">
+                      <div class="border-t border-gray-200" />
+                    </div>
                   </div>
 
                   <div class="col-span-6 sm:col-span-3">
@@ -208,12 +228,6 @@
                     />
                   </div>
 
-                  <div class="col-span-6 hidden sm:block" aria-hidden="true">
-                    <div class="py-1">
-                      <div class="border-t border-gray-200" />
-                    </div>
-                  </div>
-
                   <div class="col-span-6 sm:col-span-3">
                     <label for="no_hp" class="block text-sm font-medium text-gray-700">No. HP / Telephone</label>
                     <input
@@ -226,46 +240,36 @@
                     />
                   </div>
 
-                  <div class="col-span-6 sm:col-span-3">
-                    <label for="unit_kerja" class="block text-sm font-medium text-gray-700">Unit Kerja</label>
-                    <input
-                      id="unit_kerja"
-                      type="text"
-                      name="unit_kerja"
-                      autocomplete="unit_kerja"
-                      v-model="formData.unit_kerja"
-                      class="mt-1 input bg-white text-black block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                    />
-                  </div>
-
                   <div class="col-span-6 hidden sm:block" aria-hidden="true">
                     <div class="py-1">
                       <div class="border-t border-gray-200" />
                     </div>
                   </div>
 
-                  <div class="col-span-6 sm:col-span-6 lg:col-span-2">
+                  <div class="col-span-6 sm:col-span-3 lg:col-span-2">
                     <label for="golongan" class="block text-sm font-medium text-gray-700">Golongan</label>
-                    <input
+                    <select
                       id="golongan"
-                      type="text"
                       name="golongan"
-                      autocomplete="golongan"
                       v-model="formData.golongan"
-                      class="mt-1 input bg-white text-black block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                    />
+                      class="mt-1 select bg-white text-black block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    >
+                      <option selected value="">Pilih Golongan</option>
+                      <option v-for="item in Pegawai.golongan" :value="item.id">{{ item.nama }}</option>
+                    </select>
                   </div>
 
                   <div class="col-span-6 sm:col-span-3 lg:col-span-2">
-                    <label for="eslon" class="block text-sm font-medium text-gray-700">Eslon</label>
-                    <input
-                      id="eslon"
-                      type="text"
-                      name="eslon"
-                      autocomplete="eslon"
-                      v-model="formData.eslon"
-                      class="mt-1 input bg-white text-black block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                    />
+                    <label for="eselon" class="block text-sm font-medium text-gray-700">Eslon</label>
+                    <select
+                      id="eselon"
+                      name="eselon"
+                      v-model="formData.eselon"
+                      class="mt-1 select bg-white text-black block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    >
+                      <option selected value="">Pilih Eselon</option>
+                      <option v-for="item in Pegawai.eselon" :value="item.id">{{ item.nama }}</option>
+                    </select>
                   </div>
 
                   <div class="col-span-6 sm:col-span-3 lg:col-span-2">
@@ -295,6 +299,7 @@
 </template>
 
 <script setup>
+const Pegawai = usePegawaiStore();
 const fotoProfile = ref(null);
 const previewImage = ref(null);
 const emit = defineEmits();
@@ -304,6 +309,8 @@ const props = defineProps({
   editing: Boolean,
 });
 const formData = ref({ ...props.data });
+
+// console.log("formData", props.data);
 
 const handleFileChange = (event) => {
   const file = event.target.files[0];
@@ -326,9 +333,9 @@ const removeFile = () => {
 
 const submitForm = () => {
   if (props.editing) {
-    emit("updateUser", formData.value);
+    emit("updatePegawai", formData.value);
   } else {
-    emit("addUser", formData.value);
+    emit("addPegawai", formData.value);
   }
 };
 </script>

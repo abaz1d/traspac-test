@@ -8,9 +8,11 @@ export default defineEventHandler(async (event) => {
         message: "You don't have the rights to access this resource",
       });
     }
-    const id_pegawai = event.context.params?.id || (await readBody(event)).id;
+    const id_user = event.context.params?.id || (await readBody(event)).id;
 
-    const { data } = await request.get(`/pegawai/${id_pegawai}`);
+    const { data } = await request.delete(`/users/${id_user}`);
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
     return data;
   } catch (error) {

@@ -6,36 +6,92 @@ module.exports = function (db) {
   /* GET pegawai listing. */
   router.get("/", async function (req, res, next) {
     try {
-      const totalRowDisplay = parseInt(req.query.total_row_display) || 10;
-      const pageNumber = parseInt(req.query.page_number) || 1;
+      const { table_name } = req.query;
+      if (table_name) {
+        let query;
+        switch (table_name) {
+          case "agama":
+            query = `SELECT id_agama AS id, nama_agama AS nama FROM agama`;
+            break;
+          case "eselon":
+            query = `SELECT id_eselon AS id, nama_eselon AS nama FROM eselon`;
+            break;
+          case "golongan":
+            query = `SELECT id_golongan AS id, nama_golongan AS nama FROM golongan`;
+            break;
+          case "jabatan":
+            query = `SELECT id_jabatan AS id, nama_jabatan AS nama FROM jabatan`;
+            break;
+          case "unit_kerja":
+            query = `SELECT id_uker AS id, nama_unit AS nama FROM unit_kerja`;
+            break;
+          default:
+            res.status(400).json({ message: "Invalid table name" });
+            return;
+        }
 
-      const offset = (pageNumber - 1) * totalRowDisplay;
+        const { rows } = await db.query(query);
+        res.json(new Response(rows));
+      } else {
+        const totalRowDisplay = parseInt(req.query.total_row_display) || 10;
+        const pageNumber = parseInt(req.query.page_number) || 1;
 
-      const sql = `
-      SELECT p.id_pegawai, p.nip, p.nama, p.tempat_lahir, p.tanggal_lahir, p.jenis_kelamin, p.golongan, p.eselon, p.jabatan, p.tempat_tugas, p.agama, p.unit_kerja, p.alamat, p.no_hp, p.npwp
-      FROM pegawai p 
-      ORDER BY id_pegawai ASC
-      LIMIT $1 OFFSET $2
+        const offset = (pageNumber - 1) * totalRowDisplay;
+
+        const sql = `
+        SELECT
+        p.id_pegawai,
+        p.nip,
+        p.nama,
+        p.tempat_lahir,
+        TO_CHAR(p.tanggal_lahir, 'yyyy-MM-dd') AS tanggal_lahir,
+        p.jenis_kelamin,
+        g.nama_golongan,
+        e.nama_eselon,
+        j.nama_jabatan,
+        p.tempat_tugas,
+        a.nama_agama,
+        u.nama_unit,
+        p.alamat,
+        p.no_hp,
+        p.npwp
+    FROM
+        pegawai p
+        JOIN agama a ON p.agama = a.id_agama
+        JOIN eselon e ON p.eselon = e.id_eselon
+        JOIN golongan g ON p.golongan = g.id_golongan
+        JOIN jabatan j ON p.jabatan = j.id_jabatan
+        JOIN unit_kerja u ON p.unit_kerja = u.id_uker
+    ORDER BY
+        p.id_pegawai ASC
+    LIMIT $1 OFFSET $2;
+    
     `;
 
-      const countSql = "SELECT COUNT(id_pegawai) FROM pegawai";
+        const countSql = `SELECT COUNT(p.id_pegawai)
+      FROM pegawai p
+      JOIN agama a ON p.agama = a.id_agama
+      JOIN eselon e ON p.eselon = e.id_eselon
+      JOIN golongan g ON p.golongan = g.id_golongan
+      JOIN jabatan j ON p.jabatan = j.id_jabatan
+      JOIN unit_kerja u ON p.unit_kerja = u.id_uker`;
 
-      const result = await Promise.all([
-        db.query(sql, [totalRowDisplay, offset]),
-        db.query(countSql),
-      ]);
+        const result = await Promise.all([
+          db.query(sql, [totalRowDisplay, offset]),
+          db.query(countSql),
+        ]);
 
-      const rows = result[0].rows;
-      const totalRows = parseInt(result[1].rows[0].count);
+        const rows = result[0].rows;
+        const totalRows = parseInt(result[1].rows[0].count);
 
-      const totalPages = Math.ceil(totalRows / totalRowDisplay);
-
-      res.json(
-        new Response({
-          rows,
-          total_pages: totalPages,
-        })
-      );
+        const totalPages = Math.ceil(totalRows / totalRowDisplay);
+        res.json(
+          new Response({
+            rows,
+            total_pages: totalPages,
+          })
+        );
+      }
     } catch (err) {
       console.error(err);
       res.status(500).json(new Response(err, false));
@@ -45,7 +101,7 @@ module.exports = function (db) {
   router.get("/:id", async function (req, res, next) {
     try {
       const { rows } = await db.query(
-        "SELECT u.id_pegawai, u.email_pegawai,u.pegawainame  FROM pegawai u WHERE id_pegawai = $1",
+        "SELECT u.*, TO_CHAR(u.tanggal_lahir, 'yyyy-MM-dd') AS tanggal_lahir  FROM pegawai u WHERE id_pegawai = $1",
         [req.params.id]
       );
 
