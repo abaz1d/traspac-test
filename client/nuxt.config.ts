@@ -13,7 +13,7 @@ export default defineNuxtConfig({
     dirs: ["./stores"],
   },
   runtimeConfig: {
-    API_BASE_URL: process.env.API_BASE_URL,
+    apiBase: process.env.NUXT_PUBLIC_API_BASE,
     cookieName: process.env.COOKIE_NAME || "__traspacsession",
     cookieSecret: process.env.COOKIE_SECRET || "traspac",
     cookieExpires: parseInt(process.env.COOKIE_REMEMBER_ME_EXPIRES || ONE_DAY.toString(), 10), // 1 day

@@ -25,8 +25,6 @@ module.exports = function (db) {
           }
           data = rows;
           if (rows.rows.length == 0) {
-            //check username
-            console.log("check username");
             db.query(
               "SELECT * FROM users WHERE username = $1",
               [input_user],
@@ -44,7 +42,6 @@ module.exports = function (db) {
                   );
                 }
                 data = rows2;
-                //console.log("data", data, rows2)
                 bcrypt.compare(
                   password,
                   data.rows[0].password,
@@ -71,7 +68,6 @@ module.exports = function (db) {
                       `UPDATE public.users SET token = $1 WHERE id_user = $2 RETURNING id_user,email_user, username, token`,
                       [token, data.rows[0].id_user]
                     );
-                    console.log("sesion", req.session);
                     res.json(
                       new Response({
                         userid: rows[0].id_user,
@@ -86,7 +82,6 @@ module.exports = function (db) {
               }
             );
           } else {
-            console.log("check email");
             bcrypt.compare(
               password,
               data.rows[0].password,
@@ -136,14 +131,13 @@ module.exports = function (db) {
       const pureToken = token.split(" ")[1];
       try {
         const result = jwt.verify(pureToken, process.env.SECRETKEY);
-        const { rows } = await pool.query(
+        await pool.query(
           "SELECT token FROM users WHERE id_user = $1 ORDER BY id_user ASC",
           [user.userid]
         );
-        console.log(result);
         const user = rows[0];
         var tokenNow = null;
-        const { data } = await db.query(
+        await db.query(
           `UPDATE public.users SET token = $1 WHERE id_user = $2 RETURNING *;`,
           [tokenNow, user.id_user]
         );

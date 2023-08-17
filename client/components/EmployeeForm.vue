@@ -128,7 +128,7 @@
                   <div class="col-span-6 sm:col-span-3">
                     <label for="jenis_kelamin" class="block text-sm font-medium text-gray-700">Jenis Kelamin</label>
                     <div
-                      class="flex items-center justify-center py-3 space-x-12 bg-white text-black block w-full shadow-sm sm:text-sm border mt-1 border-gray-300 rounded-md"
+                      class="flex items-center justify-center py-3 space-x-12 bg-white text-black w-full shadow-sm sm:text-sm border mt-1 border-gray-300 rounded-md"
                     >
                       <label class="flex items-center space-x-2 cursor-pointer">
                         <input type="radio" class="radio radio-info" value="L" v-model="formData.jenis_kelamin" />
@@ -310,11 +310,9 @@ const props = defineProps({
 });
 const formData = ref({ ...props.data });
 
-// console.log("formData", props.data);
-
 const handleFileChange = (event) => {
   const file = event.target.files[0];
-  formData.value.foto_profile = file;
+  formData.value.foto_profil = file;
   if (file) {
     const reader = new FileReader();
     reader.onload = () => {
@@ -327,7 +325,7 @@ const handleFileChange = (event) => {
 };
 const removeFile = () => {
   previewImage.value = null;
-  formData.value.foto_profile = null;
+  formData.value.foto_profil = null;
   fotoProfile.value.value = null;
 };
 
@@ -338,4 +336,7 @@ const submitForm = () => {
     emit("addPegawai", formData.value);
   }
 };
+onMounted(() => {
+  previewImage.value = formData.value.foto_profil ?? null;
+});
 </script>

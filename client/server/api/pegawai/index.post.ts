@@ -1,4 +1,3 @@
-import formidable from "formidable";
 import { isUser } from "~~/server/models/user";
 
 export default defineEventHandler(async (event) => {
@@ -8,48 +7,37 @@ export default defineEventHandler(async (event) => {
       message: "You don't have the rights to access this resource",
     });
   }
-  console.log(" send");
-  let body;
-  const headers = getRequestHeaders(event);
 
-  if (headers["content-type"]?.includes("multipart/form-data")) {
-    body = await parseMultipartNodeRequest(event.node.req);
-  } else {
-    body = await readBody(event);
-  }
-  console.log(body);
+  const headers = { "Content-Type": "multipart/form-data" };
+  const dataBuffer = await readMultipartFormData(event);
 
-  const {
-    id_pegawai,
-    nama,
-    nip,
-    tempat_lahir,
-    tanggal_lahir,
-    agama,
-    jenis_kelamin,
-    alamat,
-    jabatan,
-    tempat_tugas,
-    no_hp,
-    unit_kerja,
-    eslon,
-    npwp,
-    golongan,
-    foto_profile,
-    isEdit,
-  } = body;
+  if (dataBuffer) {
+    const targetName = "id_pegawai";
+    const targetData = dataBuffer.find((item) => item.name === targetName);
 
-  return true;
-});
-function parseMultipartNodeRequest(req: any) {
-  return new Promise((resolve, reject) => {
-    const form = formidable({ multiples: true });
-    form.parse(req, (error, fields, files) => {
-      if (error) {
-        reject(error);
-        return;
+    const formData = new FormData();
+
+    dataBuffer.forEach((item) => {
+      if (item.name == "foto_profil" && item.filename && item.type) {
+        const blob = new Blob([item.data], { type: item.type });
+        formData.append(item.name, blob, item.filename);
+      } else {
+        const value = item.data.toString("utf-8");
+        formData.append(item.name, value);
       }
-      resolve({ ...fields, ...files });
     });
-  });
-}
+
+    if (targetData) {
+      const idPegawaiValue = targetData.data.toString("utf-8");
+      let response;
+      if (idPegawaiValue != "null") {
+        let { data } = await request.put(`/pegawai/${idPegawaiValue}`, formData, headers);
+        response = data;
+      } else {
+        let { data } = await request.post("/pegawai", formData, headers);
+        response = data;
+      }
+      return response;
+    }
+  }
+});

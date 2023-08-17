@@ -11,7 +11,7 @@ useHead({
 });
 
 const addPegawai = async (formData) => {
-  let data = await Pegawai.saveItem({ id_pegawai: null, isEdit: false, ...formData });
+  let data = await Pegawai.saveItem({ id_pegawai: null, ...formData });
   if (data) {
     navigateTo("/");
   }

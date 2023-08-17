@@ -1,9 +1,10 @@
 var express = require("express");
 var router = express.Router();
+const fs = require("fs");
+var path = require("path");
 const { isTokenValid, Response } = require("../helpers/util");
 
 module.exports = function (db) {
-  /* GET pegawai listing. */
   router.get("/", async function (req, res, next) {
     try {
       const { table_name } = req.query;
@@ -40,30 +41,31 @@ module.exports = function (db) {
 
         const sql = `
         SELECT
-        p.id_pegawai,
-        p.nip,
-        p.nama,
-        p.tempat_lahir,
-        TO_CHAR(p.tanggal_lahir, 'yyyy-MM-dd') AS tanggal_lahir,
-        p.jenis_kelamin,
-        g.nama_golongan,
-        e.nama_eselon,
-        j.nama_jabatan,
-        p.tempat_tugas,
-        a.nama_agama,
-        u.nama_unit,
-        p.alamat,
-        p.no_hp,
-        p.npwp
-    FROM
-        pegawai p
-        JOIN agama a ON p.agama = a.id_agama
-        JOIN eselon e ON p.eselon = e.id_eselon
-        JOIN golongan g ON p.golongan = g.id_golongan
-        JOIN jabatan j ON p.jabatan = j.id_jabatan
-        JOIN unit_kerja u ON p.unit_kerja = u.id_uker
-    ORDER BY
-        p.id_pegawai ASC
+          p.id_pegawai,
+          p.foto_profil,
+          p.nip,
+          p.nama,
+          p.tempat_lahir,
+          TO_CHAR(p.tanggal_lahir, 'yyyy-MM-dd') AS tanggal_lahir,
+          p.jenis_kelamin,
+          g.nama_golongan,
+          e.nama_eselon,
+          j.nama_jabatan,
+          p.tempat_tugas,
+          a.nama_agama,
+          u.nama_unit,
+          p.alamat,
+          p.no_hp,
+          p.npwp
+      FROM
+          pegawai p
+          LEFT JOIN agama a ON p.agama = a.id_agama
+          LEFT JOIN eselon e ON p.eselon = e.id_eselon
+          LEFT JOIN golongan g ON p.golongan = g.id_golongan
+          LEFT JOIN jabatan j ON p.jabatan = j.id_jabatan
+          LEFT JOIN unit_kerja u ON p.unit_kerja = u.id_uker
+      ORDER BY
+    p.id_pegawai ASC
     LIMIT $1 OFFSET $2;
     
     `;
@@ -114,58 +116,45 @@ module.exports = function (db) {
 
   router.post("/", async function (req, res, next) {
     try {
-      const { email_pegawai, pegawainame, password, role } = req.body;
-      // db.query(
-      //   "SELECT id_pegawai FROM pegawai WHERE email_pegawai = $1",
-      //   [email_pegawai],
-      //   (err, email) => {
-      //     if (err)
-      //       return res.json(
-      //         new Response({ message: "failed compare emaile" }, false)
-      //       );
-      //     if (email.rows.length > 0)
-      //       return res.json(
-      //         new Response({ message: "e-mail has been registered" }, false)
-      //       );
+      const insertFields = [];
+      const values = [];
 
-      //     db.query(
-      //       "SELECT id_pegawai FROM pegawai WHERE pegawainame = $1",
-      //       [pegawainame],
-      //       (err, pegawai) => {
-      //         if (err)
-      //           return res.json(
-      //             new Response({ message: "failed compare pegawainame" }, false)
-      //           );
-      //         if (pegawai.rows.length > 0)
-      //           return res.json(
-      //             new Response(
-      //               { message: "pegawainame has been registered" },
-      //               false
-      //             )
-      //           );
+      for (const fieldName in req.body) {
+        const value = req.body[fieldName];
 
-      //         //udah dihash di depan
-      //         // bcrypt.hash(password, saltRounds, async function (err, hash) {
-      //         //   if (err) return res.json(new Response({ message: "failed hash" }, false))
-      //         db.query(
-      //           "INSERT INTO pegawai(email_pegawai,pegawainame,password,role) VALUES ($1, $2, $3, $4)",
-      //           [email_pegawai, pegawainame, password, role],
-      //           (err, rows) => {
-      //             if (err)
-      //               return res.json(
-      //                 new Response({ message: "failed insert" }, false)
-      //               );
-      //             res.json(new Response({ message: "success insert" }, true));
-      //           }
-      //         );
-      //         // })
-      //       }
-      //     );
-      //   }
-      // );
+        if (value !== "" && value !== "null" && value !== "undefined") {
+          insertFields.push(fieldName);
+          values.push(value);
+        }
+      }
 
-      console.log("post add", req.body, req.body.foto_profile, req.files);
-      res.json(new Response({ message: "success add" }, true));
+      if (req.files?.foto_profil) {
+        const gambar = req.files.foto_profil;
+        let filename = `FP-${Date.now()}-${gambar.name}`;
+        const uploadPath = path.join(
+          __dirname,
+          "/../public",
+          "images",
+          filename
+        );
+
+        await gambar.mv(uploadPath);
+        insertFields.push("foto_profil");
+        values.push(filename);
+      }
+
+      if (insertFields.length > 0) {
+        const query = `
+          INSERT INTO pegawai (${insertFields.join(", ")})
+          VALUES (${values.map((_, index) => "$" + (index + 1)).join(", ")})
+          `;
+        db.query(query, values, (err, data) => {
+          if (err) throw new Error(err);
+          res.json(new Response({ message: "success add" }, true));
+        });
+      } else {
+        res.json(new Response({ message: "body empty" }, false));
+      }
     } catch (err) {
       console.error(err);
       res.status(500).json(new Response(err, false));
@@ -174,19 +163,74 @@ module.exports = function (db) {
 
   router.put("/:id", async function (req, res, next) {
     try {
-      // const { email_pegawai, pegawainame, password, role } = req.body;
-      // await db.query(
-      //   `UPDATE pegawai SET
-      // email_pegawai = $1,
-      // pegawainame = $2,
-      // password = $3,
-      // role = $4
-      // WHERE id_pegawai = $5`,
-      //   [email_pegawai, pegawainame, password, role, req.params.id]
-      // );
+      const updateFields = [];
+      const values = [];
+      const excludedFields = ["foto_profil", "gambar_lama"];
 
-      console.log("put update", req.body, req.files, req.params.id);
-      res.json(new Response({ message: "success update" }, true));
+      for (const [fieldName, value] of Object.entries(req.body)) {
+        if (
+          value !== "" &&
+          value !== "null" &&
+          value !== "undefined" &&
+          !excludedFields.includes(fieldName)
+        ) {
+          updateFields.push(`${fieldName} = $${values.length + 1}`);
+          values.push(value);
+        }
+      }
+
+      if (req.files?.foto_profil) {
+        const { gambar_lama } = req.body;
+        const gambar = req.files.foto_profil;
+        const filename = `FP-${Date.now()}-${gambar.name}`;
+        const uploadPath = path.join(
+          __dirname,
+          "/../public",
+          "images",
+          filename
+        );
+        const deletePath = path.join(
+          __dirname,
+          "..",
+          "public",
+          "images",
+          gambar_lama
+        );
+
+        await new Promise((resolve, reject) => {
+          gambar.mv(uploadPath, (err) => {
+            if (err) reject(err);
+            resolve();
+          });
+        });
+        if (fs.existsSync(deletePath)) {
+          await new Promise((resolve, reject) => {
+            fs.unlink(deletePath, (err) => {
+              if (err) reject(err);
+              resolve();
+            });
+          });
+        }
+
+        updateFields.push("foto_profil = $" + (values.length + 1));
+        values.push(filename);
+      }
+
+      if (updateFields.length > 0) {
+        values.push(req.params.id); // Menambahkan ID ke parameter
+
+        const query = `
+          UPDATE pegawai
+          SET ${updateFields.join(", ")}
+          WHERE id_pegawai = $${values.length}
+        `;
+        db.query(query, values, (err, data) => {
+          if (err) throw new Error(err);
+          res.json(new Response({ message: "success update" }, true));
+        });
+      } else {
+        res.json(new Response({ message: "no changes" }, false));
+      }
     } catch (err) {
       console.error(err);
       res.status(500).json(new Response(err, false));
@@ -195,10 +239,35 @@ module.exports = function (db) {
 
   router.delete("/:id", async function (req, res, next) {
     try {
-      // await db.query("DELETE FROM pegawai WHERE id_pegawai = $1", [req.params.id]);
-      console.log("delete", req.params.id);
-      res.json(new Response({ message: "Succes delete pegawai" }, true));
+      const { gambar_lama } = req.query;
+      const { rows } = await db.query(
+        "DELETE FROM pegawai WHERE id_pegawai = $1 RETURNING foto_profil",
+        [req.params.id]
+      );
+      if (
+        rows.length > 0 &&
+        rows[0]?.foto_profil !== null &&
+        gambar_lama !== ""
+      ) {
+        let deletePath = path.join(
+          __dirname,
+          "..",
+          "public",
+          "images",
+          gambar_lama
+        );
+        if (fs.existsSync(deletePath)) {
+          await new Promise((resolve, reject) => {
+            fs.unlink(deletePath, (err) => {
+              if (err) reject(err);
+              resolve();
+            });
+          });
+        }
+      }
+      res.json(new Response({ message: "Success delete pegawai" }, true));
     } catch (err) {
+      console.error(err);
       res
         .status(500)
         .json(

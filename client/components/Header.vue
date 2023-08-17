@@ -27,11 +27,15 @@ const logOutClick = async () => {
 <template>
   <header class="navbar mb-2 bg-neutral shadow-lg z-[999]" :class="{ 'fixed top-0 left-0': isScrolled }">
     <div class="navbar-start">
-      <NuxtLink v-if="$route.fullPath !== '/' && $route.fullPath !== '/login'" to="/" class="btn btn-square btn-ghost"
-        ><Icon name="uil:arrow-left" class="h-2/3 w-2/3"
-      /></NuxtLink>
+      <NuxtLink v-if="$route.fullPath !== '/' && $route.fullPath !== '/login'" to="/" class="btn btn-square btn-ghost">
+        <ClientOnly>
+          <Icon name="uil:arrow-left" class="h-2/3 w-2/3" />
+        </ClientOnly>
+      </NuxtLink>
       <button v-else aria-label="theme-button" class="btn-ghost btn-circle btn" @click="themeStore.toggle">
-        <Icon name="uil:sun" class="h-1/2 w-1/2" />
+        <ClientOnly>
+          <Icon name="uil:sun" class="h-1/2 w-1/2" />
+        </ClientOnly>
       </button>
     </div>
     <div class="navbar-center">
@@ -42,7 +46,9 @@ const logOutClick = async () => {
     <div class="navbar-end">
       <div v-if="$route.path !== '/login'" class="flex items-center dropdown dropdown-bottom dropdown-end">
         <label tabindex="0" class="btn-ghost btn-circle btn">
-          <Icon name="uil:bars" class="w-6 h-6" />
+          <ClientOnly>
+            <Icon name="uil:bars" class="w-6 h-6" />
+          </ClientOnly>
         </label>
         <ul
           tabindex="0"
@@ -51,7 +57,7 @@ const logOutClick = async () => {
           <li>
             <NuxtLink to="/" class="n-link-base font-poppins">Home</NuxtLink>
           </li>
-          <li>
+          <li class="my-1">
             <NuxtLink to="/about" class="n-link-base font-poppins">About</NuxtLink>
           </li>
           <li v-if="currentUser">
@@ -59,7 +65,11 @@ const logOutClick = async () => {
           </li>
         </ul>
       </div>
-      <Icon v-else name="uil:padlock" class="w-6 h-6" />
+      <div v-else>
+        <ClientOnly>
+          <Icon name="uil:padlock" class="w-6 h-6" />
+        </ClientOnly>
+      </div>
 
       <dialog id="log_out_modal" class="modal modal-top sm:modal-middle">
         <form method="dialog" class="modal-box">

@@ -24,8 +24,6 @@ export const usePegawaiStore = defineStore("pegawai", {
           tableName,
         },
       });
-      // const data = response.data;
-
       switch (tableName) {
         case "agama":
           this.agamaList = data;
@@ -43,7 +41,6 @@ export const usePegawaiStore = defineStore("pegawai", {
           this.unitKerjaList = data;
           break;
         default:
-          // Tangani jika tableName tidak sesuai
           break;
       }
     },
@@ -91,11 +88,11 @@ export const usePegawaiStore = defineStore("pegawai", {
       tempat_tugas: string;
       no_hp: string;
       unit_kerja: string;
-      eslon: string;
+      eselon: string;
       npwp: string;
       golongan: string;
-      foto_profile: File;
-      isEdit: string;
+      foto_profil: File;
+      gambar_lama: string;
     }) {
       try {
         const formData = new FormData();
@@ -112,12 +109,12 @@ export const usePegawaiStore = defineStore("pegawai", {
         formData.append("no_hp", pegawai.no_hp);
         formData.append("unit_kerja", pegawai.unit_kerja);
         formData.append("golongan", pegawai.golongan);
-        formData.append("eslon", pegawai.eslon);
+        formData.append("eselon", pegawai.eselon);
         formData.append("npwp", pegawai.npwp);
-        formData.append("foto_profile", pegawai.foto_profile);
-        formData.append("isEdit", pegawai.isEdit);
+        formData.append("foto_profil", pegawai.foto_profil);
+        formData.append("gambar_lama", pegawai.gambar_lama);
         let data;
-        data = await $fetch("/api/pegawai", {
+        data = await $fetch("/api/pegawai/", {
           method: "POST",
           body: formData,
         });
@@ -126,13 +123,14 @@ export const usePegawaiStore = defineStore("pegawai", {
         throw new Error(error as string);
       }
     },
-    async removeItem(id_pegawai: any) {
+    async removeItem(pegawai: any) {
       try {
-        this.rawItems = this.rawItems.filter((pegawai: any) => pegawai.id_pegawai !== id_pegawai);
+        this.rawItems = this.rawItems.filter((item: any) => item.id_pegawai !== pegawai.id_pegawai);
 
-        const data = await $fetch(`/api/pegawai/${id_pegawai}`, {
+        const data = await $fetch(`/api/pegawai/${pegawai.id_pegawai}`, {
           method: "DELETE",
           headers: useRequestHeaders(["cookie"]) as HeadersInit,
+          body: pegawai.gambar_lama,
         });
         return this.rawItems;
       } catch (error) {

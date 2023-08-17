@@ -9,7 +9,7 @@ const fileUpload = require("express-fileupload");
 const { pool } = require("./helpers/util");
 pool.connect((err) => {
   if (err) {
-    console.log("e database", err);
+    console.log("error database", err);
   } else {
     console.log("Connect DB successfully");
   }
@@ -24,7 +24,6 @@ var allowCrossDomain = function (req, res, next) {
 };
 
 var indexRouter = require("./routes/index")(pool);
-var usersRouter = require("./routes/users")(pool);
 var pegawaiRouter = require("./routes/pegawai")(pool);
 
 var app = express();
@@ -39,7 +38,6 @@ app.use(allowCrossDomain);
 app.use(fileUpload());
 
 app.use("/", indexRouter);
-app.use("/users", usersRouter);
 app.use("/pegawai", pegawaiRouter);
 
 module.exports = app;

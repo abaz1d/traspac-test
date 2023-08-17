@@ -10,31 +10,40 @@ const filter = reactive({
 });
 const tableRef = ref();
 const tabulator = ref();
+const isLoading = ref(false);
 const total_row_display = ref(10);
 const total_pages = ref(0);
 const page_number = ref(1);
 const pegawaiDelete = ref({
   id_pegawai: "",
   nama: "",
+  gambar_lama: null,
 });
 
 const fetchData = async () => {
-  const data = await Pegawai.readItem(page_number.value, total_row_display.value);
-  total_pages.value = data.total_pages;
-  return data.rows;
-  // tabulator.value.setData(data.rows);
+  try {
+    isLoading.value = true;
+    const data = await Pegawai.readItem(page_number.value, total_row_display.value);
+    total_pages.value = data.total_pages;
+    isLoading.value = false;
+    return data.rows;
+  } catch (error) {
+    isLoading.value = false;
+    console.error(error);
+  }
 };
 
 const deleteUserGet = (data) => {
   pegawaiDelete.value = {
     id_pegawai: data.id_pegawai,
     nama: data.nama,
+    gambar_lama: data.foto_profil,
   };
   delete_modal.showModal();
 };
 
-const deleteUserPost = (id_pegawai) => {
-  Pegawai.removeItem(id_pegawai)
+const deleteUserPost = (pegawai) => {
+  Pegawai.removeItem(pegawai)
     .then((data) => {
       tabulator.value.setData(data);
     })
@@ -69,6 +78,7 @@ watch(filter, async () => {
 
 watch(total_row_display, async () => {
   try {
+    page_number.value = 1;
     let total = await fetchData();
     tabulator.value.setData(total);
   } catch (error) {
@@ -103,7 +113,7 @@ const initTabulator = () => {
     resizableColumnFit: true,
     responsiveLayout: "collapse",
     layout: "fitColumns",
-    // height: "311px",
+    printHeader: `<h1 class='text-2xl p-2 m-2 text-center border-y-2 border-black'>Daftar Pegawai<h1>`,
     columnDefaults: {
       minWidth: 90,
     },
@@ -530,6 +540,13 @@ onMounted(async () => {
         </div>
       </div>
     </div>
+    <div
+      v-show="isLoading"
+      wire:loading
+      class="fixed top-0 left-0 right-0 bottom-0 w-full h-[50vw] z-50 overflow-hidden bg-slate-100/20 flex flex-col items-center justify-center"
+    >
+      <span class="loading loading-dots loading-lg"></span>
+    </div>
     <div class="overflow-x-auto scrollbar-hidden">
       <div
         id="tabulator"
@@ -546,9 +563,7 @@ onMounted(async () => {
         </p>
         <div class="modal-action">
           <button class="btn">Batal</button>
-          <button class="btn btn-error" for="log_out_modal" @click="deleteUserPost(pegawaiDelete.id_pegawai)">
-            Ya, Hapus
-          </button>
+          <button class="btn btn-error" for="log_out_modal" @click="deleteUserPost(pegawaiDelete)">Ya, Hapus</button>
         </div>
       </form>
     </dialog>

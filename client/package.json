@@ -1,39 +1,38 @@
 {
-    "name": "nuxt-app",
-    "private": true,
-    "scripts": {
-        "build": "nuxt build",
-        "dev": "nuxt dev",
-        "generate": "nuxt generate",
-        "preview": "nuxt preview",
-        "postinstall": "nuxt prepare"
-    },
-    "overrides": {
-        "vue": "latest"
-    },
-    "dependencies": {
-        "@pinia/nuxt": "^0.4.11",
-        "axios": "^1.4.0",
-        "cookie-signature": "^1.2.1",
-        "formidable": "^3.5.0",
-        "pinia": "^2.1.6",
-        "tabulator-tables": "^5.5.1"
-    },
-    "devDependencies": {
-        "@nuxt/devtools": "latest",
-        "@nuxt/eslint-config": "^0.1.1",
-        "@nuxtjs/tailwindcss": "^6.8.0",
-        "@tailwindcss/typography": "^0.5.9",
-        "@types/cookie-signature": "^1.1.0",
-        "@types/formidable": "^3.4.1",
-        "@types/node": "^18.17.3",
-        "@types/tabulator-tables": "^5.4.10",
-        "daisyui": "^3.5.1",
-        "eslint": "^8.47.0",
-        "eslint-config-prettier": "^9.0.0",
-        "eslint-plugin-prettier": "^5.0.0",
-        "lint-staged": "^13.2.3",
-        "nuxt": "^3.6.5",
-        "nuxt-icon": "^0.5.0"
-    }
+  "name": "nuxt-app",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "overrides": {
+    "vue": "latest"
+  },
+  "dependencies": {
+    "@pinia/nuxt": "^0.4.11",
+    "axios": "^1.4.0",
+    "cookie-signature": "^1.2.1",
+    "pinia": "^2.1.6",
+    "tabulator-tables": "^5.5.1"
+  },
+  "devDependencies": {
+    "@nuxt/devtools": "latest",
+    "@nuxt/eslint-config": "^0.1.1",
+    "@nuxtjs/tailwindcss": "^6.8.0",
+    "@tailwindcss/typography": "^0.5.9",
+    "@types/cookie-signature": "^1.1.0",
+    "@types/formidable": "^3.4.1",
+    "@types/node": "^18.17.3",
+    "@types/tabulator-tables": "^5.4.10",
+    "daisyui": "^3.5.1",
+    "eslint": "^8.47.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "lint-staged": "^13.2.3",
+    "nuxt": "^3.6.5",
+    "nuxt-icon": "^0.5.0"
+  }
 }

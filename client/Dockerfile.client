@@ -11,9 +11,10 @@ RUN npm i
 # Salin kode client ke dalam kontainer
 COPY . .
 
+RUN npm run build
 # Expose port yang akan digunakan oleh aplikasi
 EXPOSE 3000
 
 # Command untuk menjalankan aplikasi
-CMD ["npm", "run", "dev"]
-# CMD ["npm", "run", "preview"]
+#CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "preview"]
