@@ -1,10 +1,8 @@
 var express = require("express");
 var router = express.Router();
 const bcrypt = require("bcrypt");
-const saltRounds = 10;
 const jwt = require("jsonwebtoken");
-const path = require("path");
-const { isLoggedIn, Response } = require("../helpers/util");
+const { Response } = require("../helpers/util");
 
 /* GET home page. */
 module.exports = function (db) {
@@ -56,7 +54,6 @@ module.exports = function (db) {
                         )
                       );
                     }
-                    //crete token
                     var token = jwt.sign(
                       {
                         userid: data.rows[0].id_user,
@@ -73,7 +70,6 @@ module.exports = function (db) {
                         userid: rows[0].id_user,
                         email: rows[0].email_user,
                         username: rows[0].username,
-
                         token: rows[0].token,
                       })
                     );
@@ -111,7 +107,6 @@ module.exports = function (db) {
                     userid: rows[0].id_user,
                     email: rows[0].email_user,
                     username: rows[0].username,
-
                     token: rows[0].token,
                   })
                 );
@@ -125,15 +120,15 @@ module.exports = function (db) {
     }
   });
 
-  router.get("/logout", async function (req, res) {
+  router.post("/logout", async function (req, res) {
     const token = req.headers.authorization;
     if (token && token.split(" ")[1]) {
       const pureToken = token.split(" ")[1];
       try {
         const result = jwt.verify(pureToken, process.env.SECRETKEY);
-        await pool.query(
+        const { rows } = await db.query(
           "SELECT token FROM users WHERE id_user = $1 ORDER BY id_user ASC",
-          [user.userid]
+          [result.userid]
         );
         const user = rows[0];
         var tokenNow = null;
@@ -143,6 +138,7 @@ module.exports = function (db) {
         );
         res.json(new Response({ message: "sign out success" }, true));
       } catch (e) {
+        console.error(e);
         res.json(new Response({ message: "token invalid" }, false));
       }
     } else {

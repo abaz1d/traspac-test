@@ -1,7 +1,7 @@
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig();
 
-  await request.get("/logout");
+  await request.post("/logout");
 
   deleteCookie(event, config.cookieName, {
     httpOnly: true,

@@ -30,6 +30,10 @@ const fetchData = async () => {
   } catch (error) {
     isLoading.value = false;
     console.error(error);
+    return createError({
+      statusCode: 500,
+      message: `${error}`,
+    });
   }
 };
 
@@ -49,6 +53,10 @@ const deleteUserPost = (pegawai) => {
     })
     .catch((error) => {
       console.error(error);
+      return createError({
+        statusCode: 500,
+        message: `${error}`,
+      });
     });
 };
 
@@ -65,6 +73,10 @@ const onFilter = async () => {
     tabulator.value.setFilter(filter.field, filter.type, filter.value);
   } catch (error) {
     console.error(error);
+    return createError({
+      statusCode: 500,
+      message: `${error}`,
+    });
   }
 };
 
@@ -72,7 +84,10 @@ watch(filter, async () => {
   try {
     onFilter();
   } catch (error) {
-    alert("Gagal wtch filter" + error);
+    return createError({
+      statusCode: 500,
+      message: `Gagal wtch filter, ${error}`,
+    });
   }
 });
 
@@ -82,7 +97,10 @@ watch(total_row_display, async () => {
     let total = await fetchData();
     tabulator.value.setData(total);
   } catch (error) {
-    alert("Gagal wtch change total" + error);
+    return createError({
+      statusCode: 500,
+      message: `Gagal wtch change total, ${error}`,
+    });
   }
 });
 watch(page_number, async () => {
@@ -91,6 +109,10 @@ watch(page_number, async () => {
     tabulator.value.setData(total);
   } catch (error) {
     alert("Gagal wtch change page" + error);
+    return createError({
+      statusCode: 500,
+      message: `Gagal wtch change page , ${error}`,
+    });
   }
 });
 
@@ -400,6 +422,10 @@ onMounted(async () => {
     reInitOnResizeWindow();
   } catch (error) {
     console.error(error);
+    return createError({
+      statusCode: 500,
+      message: `${error}`,
+    });
   }
 });
 </script>

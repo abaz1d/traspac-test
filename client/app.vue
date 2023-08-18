@@ -16,7 +16,7 @@
 import { THEMES, useThemeStore } from "./stores/theme";
 useHead({
   title: "Daftar Pegawai",
-  titleTemplate: "%s - Daftar Pegawai",
+  titleTemplate: "%s - Aplikasi PNS",
   htmlAttrs: {
     lang: "en",
   },

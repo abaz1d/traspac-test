@@ -18,6 +18,10 @@ const logOutClick = async () => {
     navigateTo("/login");
   } catch (error) {
     console.error(error);
+    return createError({
+      statusCode: 500,
+      message: `${error}`,
+    });
   } finally {
     form.pending = false;
   }

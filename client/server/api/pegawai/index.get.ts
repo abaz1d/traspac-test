@@ -18,6 +18,9 @@ export default defineEventHandler(async (event) => {
 
     return response;
   } catch (error) {
-    return error;
+    return createError({
+      statusCode: 500,
+      message: `${error}`,
+    });
   }
 });

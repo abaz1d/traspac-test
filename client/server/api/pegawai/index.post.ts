@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const headers = { "Content-Type": "multipart/form-data" };
+  const headers = { headers: { "Content-Type": "multipart/form-data" } };
   const dataBuffer = await readMultipartFormData(event);
 
   if (dataBuffer) {
@@ -18,12 +18,14 @@ export default defineEventHandler(async (event) => {
     const formData = new FormData();
 
     dataBuffer.forEach((item) => {
-      if (item.name == "foto_profil" && item.filename && item.type) {
-        const blob = new Blob([item.data], { type: item.type });
-        formData.append(item.name, blob, item.filename);
-      } else {
-        const value = item.data.toString("utf-8");
-        formData.append(item.name, value);
+      if (item.name) {
+        if (item.name == "foto_profil" && item.filename && item.type) {
+          const blob = new Blob([item.data], { type: item.type });
+          formData.append(item.name, blob, item.filename);
+        } else {
+          const value = item.data.toString("utf-8");
+          formData.append(item.name, value);
+        }
       }
     });
 

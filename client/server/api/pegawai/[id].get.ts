@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
       if (fotoProfile) {
         try {
           var buff = fotoProfile.data.map((b: any) => String.fromCharCode(b)).join("");
-          let image = new URL(`${useRuntimeConfig().apiBase}/images/${buff}`).href;
+          let image = new URL(`${useRuntimeConfig().public.apiBase}/images/${buff}`).href;
           const response = await fetch(image, { method: "HEAD" });
           if (response.ok) {
             gambar_lama = buff;
@@ -38,6 +38,9 @@ export default defineEventHandler(async (event) => {
 
     return data;
   } catch (error) {
-    return error;
+    return createError({
+      statusCode: 500,
+      message: `${error}`,
+    });
   }
 });

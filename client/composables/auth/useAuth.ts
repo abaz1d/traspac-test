@@ -1,3 +1,4 @@
+import { ApiResponse } from "~~/types";
 import { useAuthUser } from "./useAuthUser";
 
 export const useAuth = () => {
@@ -12,14 +13,14 @@ export const useAuth = () => {
   };
 
   const login = async (email: string, password: string, rememberMe: boolean) => {
-    const data = await $fetch("/auth/login", {
+    const data = (await $fetch("/auth/login", {
       method: "POST",
       body: {
         email,
         password,
         rememberMe,
       },
-    });
+    })) as ApiResponse;
 
     setUser(data.user);
 

@@ -29,7 +29,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      API_BASE_URL: "http://backend:3001/"
+      NUXT_PUBLIC_API_BASE: "http://backend:3001/"
       COOKIE_NAME: __traspacsession
       COOKIE_SECRET: traspac
       COOKIE_EXPIRES: 86400000 # 1 day

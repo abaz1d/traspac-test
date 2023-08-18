@@ -87,8 +87,11 @@ async function onLoginClick() {
     emit("success");
   } catch (error) {
     console.error(error);
-
     if (error.data.message) form.error = error.data.message;
+    return createError({
+      statusCode: 500,
+      message: `${error}`,
+    });
   } finally {
     form.pending = false;
   }

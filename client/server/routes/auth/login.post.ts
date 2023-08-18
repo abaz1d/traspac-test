@@ -19,7 +19,8 @@ export default defineEventHandler(async (event) => {
       httpOnly: true,
       path: "/",
       sameSite: "strict",
-      secure: process.env.NODE_ENV === "production",
+      secure: false, // for development uncomment this
+      // secure: process.env.NODE_ENV === "production", // for production to deployment mode uncomment the following line
       expires: rememberMe
         ? new Date(Date.now() + config.cookieRememberMeExpires)
         : new Date(Date.now() + config.cookieExpires),

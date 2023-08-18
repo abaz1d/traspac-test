@@ -1,4 +1,3 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
 const ONE_DAY = 60 * 60 * 24 * 1000;
 const ONE_WEEK = ONE_DAY * 7;
 
@@ -13,7 +12,9 @@ export default defineNuxtConfig({
     dirs: ["./stores"],
   },
   runtimeConfig: {
-    apiBase: process.env.NUXT_PUBLIC_API_BASE,
+    public: {
+      apiBase: process.env.NUXT_PUBLIC_API_BASE,
+    },
     cookieName: process.env.COOKIE_NAME || "__traspacsession",
     cookieSecret: process.env.COOKIE_SECRET || "traspac",
     cookieExpires: parseInt(process.env.COOKIE_REMEMBER_ME_EXPIRES || ONE_DAY.toString(), 10), // 1 day
@@ -21,10 +22,7 @@ export default defineNuxtConfig({
   },
 
   pinia: {
-    autoImports: [
-      "defineStore", // import { defineStore } from 'pinia'
-      ["defineStore", "definePiniaStore"], // import { defineStore as definePiniaStore } from 'pinia'
-    ],
+    autoImports: ["defineStore", ["defineStore", "definePiniaStore"]],
   },
   css: ["@/assets/css/main.css"],
 });
