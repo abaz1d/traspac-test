@@ -8,8 +8,12 @@ export default defineEventHandler(async (event) => {
         message: "You don't have the rights to access this resource",
       });
     }
+    interface PhotoProfile {
+      type: string;
+      data: number[];
+    }
     let gambar_lama = null;
-    const getImgUrl = async (fotoProfile: Buffer) => {
+    const getImgUrl = async (fotoProfile: PhotoProfile) => {
       if (fotoProfile) {
         try {
           var buff = fotoProfile.data.map((b: any) => String.fromCharCode(b)).join("");

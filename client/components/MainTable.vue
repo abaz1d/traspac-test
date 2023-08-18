@@ -50,6 +50,7 @@ const deleteUserPost = (pegawai) => {
   Pegawai.removeItem(pegawai)
     .then((data) => {
       tabulator.value.setData(data);
+      fetchData();
     })
     .catch((error) => {
       console.error(error);
