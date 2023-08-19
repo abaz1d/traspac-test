@@ -65,4 +65,3 @@ Password    :123
 ### Tangkapan Layar Mode Mobile
 
 <img src="https://github.com/abaz1d/traspac-test/assets/95122515/4091b580-478b-4fe3-a58d-d46ac2e44099" width="25%"> <img src="https://github.com/abaz1d/traspac-test/assets/95122515/ad2216d0-640b-4af9-ba7a-748295a19800" width="24%"> <img src="https://github.com/abaz1d/traspac-test/assets/95122515/6d647979-da85-4524-99cc-3ec981295d89" width="25%"> <img src="https://github.com/abaz1d/traspac-test/assets/95122515/3c0b49b4-4241-4d42-a126-fed4d132b537" width="24%">
-
