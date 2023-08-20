@@ -2,10 +2,20 @@ import type { H3Event } from "h3";
 import cookieSignature from "cookie-signature";
 
 export function serialize(obj: any) {
+  console.log("serialize", obj.token);
   const value = Buffer.from(JSON.stringify(obj), "utf-8").toString("base64");
   const length = Buffer.byteLength(value);
 
   if (length > 4096) throw new Error("Session value is too long");
+  request.interceptors.request.use(function (config) {
+    const token = obj?.token;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    } else {
+      config.headers.Authorization = "";
+    }
+    return config;
+  });
 
   return value;
 }
