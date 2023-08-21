@@ -1,7 +1,7 @@
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig();
-
-  await request.post("/logout");
+  const headers = event.context.user?.token ? { Authorization: `Bearer ${event.context.user?.token}` } : {};
+  const { data } = await request.post("/logout", {}, { headers });
 
   deleteCookie(event, config.cookieName, {
     httpOnly: true,

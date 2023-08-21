@@ -7,8 +7,9 @@ export default defineEventHandler(async (event) => {
       message: "You don't have the rights to access this resource",
     });
   }
-
-  const headers = { headers: { "Content-Type": "multipart/form-data" } };
+  const headers = {
+    headers: { Authorization: `Bearer ${event.context.user?.token}`, "Content-Type": "multipart/form-data" },
+  };
   const dataBuffer = await readMultipartFormData(event);
 
   if (dataBuffer) {

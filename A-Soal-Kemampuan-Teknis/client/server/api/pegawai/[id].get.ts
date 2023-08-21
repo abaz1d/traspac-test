@@ -32,8 +32,9 @@ export default defineEventHandler(async (event) => {
       }
     };
     const id_pegawai = event.context.params?.id || (await readBody(event)).id;
+    const headers = event.context.user?.token ? { Authorization: `Bearer ${event.context.user?.token}` } : {};
 
-    const { data } = await request.get(`/pegawai/${id_pegawai}`);
+    const { data } = await request.get(`/pegawai/${id_pegawai}`, { headers });
 
     if (data.data?.foto_profil != null) {
       data.data.foto_profil = await getImgUrl(data.data?.foto_profil);

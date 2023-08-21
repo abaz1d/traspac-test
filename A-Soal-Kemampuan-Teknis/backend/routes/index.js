@@ -122,14 +122,16 @@ module.exports = function (db) {
 
   router.post("/logout", async function (req, res) {
     const token = req.headers.authorization;
+    console.log("tokem", req.headers);
     if (token && token.split(" ")[1]) {
       const pureToken = token.split(" ")[1];
       try {
         const result = jwt.verify(pureToken, process.env.SECRETKEY);
         const { rows } = await db.query(
-          "SELECT token FROM users WHERE id_user = $1 ORDER BY id_user ASC",
+          "SELECT id_user,token FROM users WHERE id_user = $1 ORDER BY id_user ASC",
           [result.userid]
         );
+        console.log("out", rows, result);
         const user = rows[0];
         var tokenNow = null;
         await db.query(

@@ -18,7 +18,6 @@ class Response {
 
 const isTokenValid = async (req, res, next) => {
   const token = req.headers.authorization;
-  console.log("token", token);
   //next()
   if (token && token.split(" ")[1]) {
     const pureToken = token.split(" ")[1];
@@ -31,7 +30,6 @@ const isTokenValid = async (req, res, next) => {
       );
 
       req.user = rows[0];
-      console.log("req", rows, req.user.token == pureToken);
       if (req.user.token == pureToken) {
         next();
       } else {
@@ -39,7 +37,6 @@ const isTokenValid = async (req, res, next) => {
       }
     } catch (e) {
       console.error(e);
-      console.log("gagal verify");
       res.json(new Response({ message: "token invalid" }, false));
     }
   } else {

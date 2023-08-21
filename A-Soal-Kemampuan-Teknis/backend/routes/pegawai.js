@@ -7,8 +7,6 @@ const { isTokenValid, Response } = require("../helpers/util");
 module.exports = function (db) {
   router.get("/", isTokenValid, async function (req, res, next) {
     try {
-      // const token = req.headers.authorization;
-      // console.log("token", token);
       const { table_name } = req.query;
       if (table_name) {
         let query;

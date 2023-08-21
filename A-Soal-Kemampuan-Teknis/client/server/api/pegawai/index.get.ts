@@ -12,7 +12,10 @@ export default defineEventHandler(async (event) => {
     const { page_number, total_row_display } = getQuery(event);
     let response;
     if (!id_pegawai) {
-      const { data } = await request.get(`/pegawai?page_number=${page_number}&total_row_display=${total_row_display}`);
+      const headers = event.context.user?.token ? { Authorization: `Bearer ${event.context.user?.token}` } : {};
+      const { data } = await request.get(`/pegawai?page_number=${page_number}&total_row_display=${total_row_display}`, {
+        headers,
+      });
       response = data;
     }
 

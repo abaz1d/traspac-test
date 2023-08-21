@@ -11,7 +11,8 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event);
     const id_pegawai = event.context.params?.id || (await readBody(event)).id;
     const old_picture = body?.data?.map((b: any) => String.fromCharCode(b)).join("") ?? "";
-    const { data } = await request.delete(`/pegawai/${id_pegawai}?gambar_lama=${old_picture}`);
+    const headers = event.context.user?.token ? { Authorization: `Bearer ${event.context.user?.token}` } : {};
+    const { data } = await request.delete(`/pegawai/${id_pegawai}?gambar_lama=${old_picture}`, { headers });
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
 

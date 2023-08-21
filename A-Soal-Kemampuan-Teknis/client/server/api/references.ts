@@ -16,8 +16,8 @@ export default defineEventHandler(async (event) => {
         message: "You don't have table query request",
       });
     }
-
-    const { data } = await request.get(`/pegawai/?table_name=${tableName}`);
+    const headers = event.context.user?.token ? { Authorization: `Bearer ${event.context.user?.token}` } : {};
+    const { data } = await request.get(`/pegawai/?table_name=${tableName}`, { headers });
 
     if (data.success) {
       return data.data;

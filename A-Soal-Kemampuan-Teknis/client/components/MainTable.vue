@@ -24,7 +24,7 @@ const fetchData = async () => {
   try {
     isLoading.value = true;
     const data = await Pegawai.readItem(page_number.value, total_row_display.value);
-    total_pages.value = data.total_pages;
+    total_pages.value = data?.total_pages == 0 ? 1 : data?.total_pages ?? 1;
     isLoading.value = false;
     return data.rows;
   } catch (error) {
